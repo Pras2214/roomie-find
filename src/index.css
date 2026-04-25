@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --crimson: #990016;
+  --crimson-light: #C80018;
+  --crimson-dark: #7e0418;
+  --cream: #FDF6EC;
+  --cream-dark: #F5EAD8;
+}
+
+body {
+  background-color: var(--cream);
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+@layer components {
+  .btn-crimson {
+    @apply bg-crimson-800 text-white font-semibold px-6 py-3 rounded-xl 
+           hover:bg-crimson-700 active:bg-crimson-900 transition-all duration-200
+           shadow-sm hover:shadow-md;
+  }
+
+  .btn-outline {
+    @apply border-2 border-crimson-800 text-crimson-800 font-semibold px-6 py-3 rounded-xl
+           hover:bg-crimson-50 active:bg-crimson-100 transition-all duration-200;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-crimson-100/50;
+  }
+
+  .input-field {
+    @apply w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-800
+           focus:outline-none focus:border-crimson-400 focus:ring-2 focus:ring-crimson-100
+           transition-all duration-200 bg-white;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-gray-700 mb-1.5;
+  }
+
+  .section-title {
+    @apply font-display text-2xl font-bold text-crimson-900;
+  }
+}
+
+/* Match % badge gradient colors */
+.match-high { background: linear-gradient(135deg, #16a34a, #22c55e); }
+.match-med  { background: linear-gradient(135deg, #d97706, #f59e0b); }
+.match-low  { background: linear-gradient(135deg, #dc2626, #ef4444); }
+
+/* Card hover effect */
+.profile-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(153, 0, 22, 0.12);
+}
+.profile-card .hover-overlay {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.profile-card:hover .hover-overlay {
+  opacity: 1;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #fdf6ec; }
+::-webkit-scrollbar-thumb { background: #ffc6cc; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #990016; }
+
+/* Fade-in animation */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeInUp 0.4s ease forwards; }
+.fade-in-delay-1 { animation: fadeInUp 0.4s ease 0.1s forwards; opacity: 0; }
+.fade-in-delay-2 { animation: fadeInUp 0.4s ease 0.2s forwards; opacity: 0; }
+.fade-in-delay-3 { animation: fadeInUp 0.4s ease 0.3s forwards; opacity: 0; }

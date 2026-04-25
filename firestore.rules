@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users can read all profiles, write their own
+    // + allow setting/clearing roommateId on another user (mutual roommate action)
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+
+      // Allow another authenticated user to update ONLY roommateId + isMatched
+      // (used when confirming or removing a mutual roommate)
+      allow update: if request.auth != null
+        && request.auth.uid != userId
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['roommateId', 'isMatched']);
+    }
+
+    // Interests: authenticated users can read/write their own
+    match /interests/{interestId} {
+      allow read: if request.auth != null &&
+        (resource.data.fromUserId == request.auth.uid ||
+         resource.data.toUserId == request.auth.uid);
+      allow create: if request.auth != null &&
+        request.resource.data.fromUserId == request.auth.uid;
+      allow delete: if request.auth != null &&
+        resource.data.fromUserId == request.auth.uid;
+    }
+
+    // Notifications: only the recipient can read/update
+    match /notifications/{notifId} {
+      allow read, update: if request.auth != null &&
+        resource.data.toUserId == request.auth.uid;
+      allow create: if request.auth != null;
+    }
+  }
+}
