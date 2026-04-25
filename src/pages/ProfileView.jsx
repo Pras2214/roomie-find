@@ -390,12 +390,13 @@ export default function ProfileView() {
             {/* Withdraw / Show Interest */}
             <button
               onClick={handleInterest}
-              disabled={interestLoading || isRoommated}
+              disabled={interestLoading || isRoommated || myProfile?.isHidden}
+              title={myProfile?.isHidden ? "You cannot show or withdraw interest while your profile is hidden." : ""}
               className={`flex-1 py-3.5 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all ${
                 interestSent
                   ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200'
                   : 'bg-crimson-800 text-white hover:bg-crimson-700 shadow-lg shadow-crimson-200'
-              } disabled:opacity-60`}
+              } disabled:opacity-60 disabled:cursor-not-allowed`}
             >
               {interestSent ? <><HeartOff size={18} /> Withdraw Interest</> : <><Heart size={18} /> Show Interest</>}
             </button>
@@ -404,8 +405,9 @@ export default function ProfileView() {
             {isMutual && !isRoommated && (
               <button
                 onClick={handleSetRoommate}
-                disabled={roommateLoading}
-                className="flex-1 py-3.5 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all bg-green-600 text-white hover:bg-green-500 shadow-lg shadow-green-200 disabled:opacity-60"
+                disabled={roommateLoading || myProfile?.isHidden}
+                title={myProfile?.isHidden ? "You cannot secure a roommate while your profile is hidden." : ""}
+                className="flex-1 py-3.5 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all bg-green-600 text-white hover:bg-green-500 shadow-lg shadow-green-200 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 🏠 Set as Roommate
               </button>
@@ -415,8 +417,9 @@ export default function ProfileView() {
             {isRoommated && (
               <button
                 onClick={handleRemoveRoommate}
-                disabled={roommateLoading}
-                className="flex-1 py-3.5 rounded-xl font-semibold text-base flex items-center justify-center gap-2 bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-60"
+                disabled={roommateLoading || myProfile?.isHidden}
+                title={myProfile?.isHidden ? "Please unhide your profile first to modify roommate connections." : ""}
+                className="flex-1 py-3.5 rounded-xl font-semibold text-base flex items-center justify-center gap-2 bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 🏠 Remove Roommate
               </button>
