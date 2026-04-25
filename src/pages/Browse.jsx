@@ -29,7 +29,7 @@ export default function Browse() {
         const snap = await getDocs(q)
         const fetched = snap.docs
           .map(d => ({ id: d.id, ...d.data() }))
-          .filter(u => u.id !== user?.uid && !u.isMatched)
+          .filter(u => u.id !== user?.uid && !u.isMatched && !u.isHidden)
         setUsers(fetched)
       } catch (err) {
         console.error(err)

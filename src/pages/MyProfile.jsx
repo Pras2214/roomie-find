@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { MapPin, GraduationCap, Edit, Instagram, Linkedin, Moon, Utensils, Home, Volume2, Dog, Cigarette, Wine, Sparkles, Building, Maximize, Bath, DollarSign, Users, Phone, Mail, Globe } from 'lucide-react'
-
+import { MapPin, GraduationCap, Edit, Instagram, Linkedin, Moon, Utensils, Home, Volume2, Dog, Cigarette, Wine, Sparkles, Building, Maximize, Bath, DollarSign, Users, Phone, Mail, Globe, EyeOff, Eye } from 'lucide-react'
+import { doc, updateDoc } from 'firebase/firestore'
+import { db } from '../firebase/config'
+import toast from 'react-hot-toast'
 function InfoRow({ icon: Icon, label, value }) {
   if (!value && value !== false) return null
   return (
@@ -27,8 +29,21 @@ function ProfileSection({ title, icon: Icon, children }) {
 }
 
 export default function MyProfile() {
-  const { profile } = useAuth()
+  const { profile, refreshProfile } = useAuth()
   const navigate = useNavigate()
+
+  const toggleVisibility = async () => {
+    try {
+      const newStatus = !profile.isHidden
+      await updateDoc(doc(db, 'users', profile.id), {
+        isHidden: newStatus
+      })
+      await refreshProfile()
+      toast.success(newStatus ? 'Profile hidden from Browse' : 'Profile is now visible in Browse')
+    } catch(err) {
+      toast.error('Failed to update visibility')
+    }
+  }
 
   if (!profile) return (
     <div className="text-center py-20">
@@ -40,12 +55,26 @@ export default function MyProfile() {
     <div className="max-w-2xl mx-auto fade-in">
       <div className="flex items-center justify-between mb-6">
         <h1 className="section-title">My Profile</h1>
-        <button
-          onClick={() => navigate('/onboarding')}
-          className="btn-outline flex items-center gap-2 text-sm py-2"
-        >
-          <Edit size={15} /> Edit Profile
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={toggleVisibility}
+            className={`flex items-center gap-2 text-sm py-2 px-3 sm:px-4 rounded-full font-medium transition duration-200 border ${
+              profile.isHidden 
+                ? 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200' 
+                : 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
+            }`}
+            title={profile.isHidden ? "Un-hide profile to be seen in browse" : "Hide profile from being seen in browse"}
+          >
+            {profile.isHidden ? <EyeOff size={15} /> : <Eye size={15} />}
+            <span className="hidden sm:inline">{profile.isHidden ? 'Hidden from Browse' : 'Visible in Browse'}</span>
+          </button>
+          <button
+            onClick={() => navigate('/onboarding')}
+            className="btn-outline flex items-center gap-2 text-sm py-2"
+          >
+            <Edit size={15} /> <span className="hidden sm:inline">Edit Profile</span>
+          </button>
+        </div>
       </div>
 
       <div className="card overflow-hidden shadow-lg shadow-crimson-100/20 mb-6">
